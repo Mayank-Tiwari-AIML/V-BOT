@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIT BOT | Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --container-bg: rgba(255, 255, 255, 0.9);
+      --text-main: #2d3436;
+      --text-sub: #636e72;
+      --primary: #6c5ce7;
+      --primary-hover: #a29bfe;
+      --border: #dfe6e9;
+      --answer-box: #f1f2f6;
+      --shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      --container-bg: rgba(30, 30, 30, 0.95);
+      --text-main: #f5f6fa;
+      --text-sub: #b2bec3;
+      --primary: #a29bfe;
+      --primary-hover: #c7ecee;
+      --border: #444;
+      --answer-box: #2d3436;
+      --shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      transition: all 0.4s ease;
+      padding: 20px;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .feedback-btn {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .theme-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+    .theme-switch input { display: none; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px; width: 16px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(26px); }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      background: var(--container-bg);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 { margin: 0 0 10px; font-weight: 600; color: var(--primary); }
+    .subtitle { font-size: 14px; color: var(--text-sub); margin-bottom: 30px; }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 16px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    textarea:focus { border-color: var(--primary); }
+
+    .ask-btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .ask-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    .answer {
+      margin-top: 25px;
+      padding: 20px;
+      background: var(--answer-box);
+      border-radius: 12px;
+      min-height: 100px;
+      text-align: left;
+      line-height: 1.6;
+      border-left: 4px solid var(--primary);
+      position: relative;
+    }
+
+    /* Cursor effect */
+    .typing::after {
+      content: '|';
+      margin-left: 2px;
+      animation: blink 0.7s infinite;
+      color: var(--primary);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    footer a { color: #fff; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.5); }
+    footer p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="top-nav">
+    <a href="YOUR_GOOGLE_FORM_URL" target="_blank" class="feedback-btn">Give Feedback</a>
+    <div style="display: flex; align-items: center;">
+      <span style="margin-right: 10px; font-size: 12px; color: white;">Dark Mode</span>
+      <label class="theme-switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>VIT BOT</h1>
+    <p class="subtitle">Intelligent answers for the VIT community</p>
+
+    <textarea id="question" placeholder="Ask me anything..."></textarea>
+    <button class="ask-btn" id="askBtn">Ask VIT Bot</button>
+
+    <div class="answer" id="answer">How can I assist you today?</div>
+  </div>
+
+  <footer>
+    <p>Made with 💖 by: <a href="https://www.linkedin.com/in/mayank-kailas-tiwari/" target="_blank">Mayank Tiwari</a></p>
+    <p><a href="https://x.com" target="_blank">Give me a star</a></p>
+  </footer>
+
+  <script>
+    const askBtn = document.getElementById("askBtn");
+    const questionBox = document.getElementById("question");
+    const answerBox = document.getElementById("answer");
+    const themeToggle = document.getElementById("themeToggle");
+
+    // Theme Switch
+    themeToggle.addEventListener("change", () => {
+      document.documentElement.setAttribute("data-theme", themeToggle.checked ? "dark" : "light");
+    });
+
+    /**
+     * Simulation of streaming text
+     * @param {string} text - The full response from API
+     */
+    function typeWriter(text) {
+      answerBox.textContent = "";
+      answerBox.classList.add("typing");
+      let i = 0;
+      const speed = 20; // Speed in milliseconds (lower is faster)
+
+      function type() {
+        if (i < text.length) {
+          answerBox.textContent += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          answerBox.classList.remove("typing");
+        }
+      }
+      type();
+    }
+
+    // API Call Logic
+    askBtn.addEventListener("click", async () => {
+      const question = questionBox.value.trim();
+      if (!question) {
+        alert("Please type a question.");
+        return;
+      }
+
+      answerBox.textContent = "Bot is thinking...";
+      answerBox.style.opacity = "0.6";
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await response.json();
+        const fullAnswer = data.answer || "No answer received.";
+        
+        answerBox.style.opacity = "1";
+        // Call the typewriter effect instead of just setting textContent
+        typeWriter(fullAnswer);
+
+      } catch (err) {
+        answerBox.style.opacity = "1";
+        answerBox.textContent = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

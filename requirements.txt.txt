@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+gunicorn
+pydantic
+langchain
+langchain-community
+langchain-openai
+langchain-text-splitters
+faiss-cpu
+python-dotenv
+pandas
+rank_bm25
