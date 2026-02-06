@@ -1,12 +1,19 @@
+# Web Framework
 fastapi
-uvicorn
-gunicorn
-pydantic
+uvicorn[standard]
+
+# LangChain Core & Integrations
 langchain
 langchain-community
 langchain-openai
-langchain-text-splitters
-faiss-cpu
-python-dotenv
+langchain-chroma
+
+# Vector Database & Data Handling
+chromadb
+pysqlite3-binary  # Important for some cloud hosting environments
 pandas
-rank_bm25
+numpy
+
+# Utilities
+python-dotenv
+pydantic
