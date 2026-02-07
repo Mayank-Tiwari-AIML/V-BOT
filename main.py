@@ -54,7 +54,7 @@ def get_rag_chain():
     )
 
     prompt = PromptTemplate(
-        template="""You are a helpful assistant. Answer ONLY from the provided context.
+        template="""You are a helpful assistant. Answer ONLY from the provided context, if you do not find answer just reply (Information not found in database , check if there is typo)
 Context: {context}
 Question: {question}""",
         input_variables=["context", "question"]
