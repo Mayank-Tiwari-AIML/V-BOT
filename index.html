@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VIT BOT | Assistant</title>
+  <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -74,7 +75,9 @@
       width: 50px;
       height: 24px;
     }
+
     .theme-switch input { display: none; }
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -83,6 +86,7 @@
       transition: .4s;
       border-radius: 34px;
     }
+
     .slider:before {
       position: absolute;
       content: "";
@@ -92,6 +96,7 @@
       transition: .4s;
       border-radius: 50%;
     }
+
     input:checked + .slider { background-color: var(--primary); }
     input:checked + .slider:before { transform: translateX(26px); }
 
@@ -108,7 +113,12 @@
     }
 
     h1 { margin: 0 0 10px; font-weight: 600; color: var(--primary); }
-    .subtitle { font-size: 14px; color: var(--text-sub); margin-bottom: 30px; }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 30px;
+    }
 
     textarea {
       width: 100%;
@@ -124,6 +134,7 @@
       outline: none;
       transition: border-color 0.3s;
     }
+
     textarea:focus { border-color: var(--primary); }
 
     .ask-btn {
@@ -139,7 +150,11 @@
       cursor: pointer;
       transition: transform 0.2s, background 0.3s;
     }
-    .ask-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    .ask-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
 
     .answer {
       margin-top: 25px;
@@ -153,7 +168,6 @@
       position: relative;
     }
 
-    /* Cursor effect */
     .typing::after {
       content: '|';
       margin-left: 2px;
@@ -172,14 +186,23 @@
       font-size: 14px;
       margin-top: 10px;
     }
-    footer a { color: #fff; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.5); }
+
+    footer a {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+    }
+
     footer p { margin: 5px 0; }
   </style>
 </head>
+
 <body>
 
   <div class="top-nav">
-    <a href="YOUR_GOOGLE_FORM_URL" target="_blank" class="feedback-btn">Give Feedback</a>
+    <a href="https://forms.gle/pe2iZVuwb17YvFQi6" target="_blank" class="feedback-btn">Give Feedback</a>
+
     <div style="display: flex; align-items: center;">
       <span style="margin-right: 10px; font-size: 12px; color: white;">Dark Mode</span>
       <label class="theme-switch">
@@ -201,7 +224,7 @@
 
   <footer>
     <p>Made with 💖 by: <a href="https://www.linkedin.com/in/mayank-kailas-tiwari/" target="_blank">Mayank Tiwari</a></p>
-    <p><a href="https://x.com" target="_blank">Give me a star</a></p>
+    <p><a href="https://github.com/Mayank-Tiwari-AIML/V-BOT/" target="_blank">Give me a star</a></p>
   </footer>
 
   <script>
@@ -210,20 +233,18 @@
     const answerBox = document.getElementById("answer");
     const themeToggle = document.getElementById("themeToggle");
 
-    // Theme Switch
     themeToggle.addEventListener("change", () => {
-      document.documentElement.setAttribute("data-theme", themeToggle.checked ? "dark" : "light");
+      document.documentElement.setAttribute(
+        "data-theme",
+        themeToggle.checked ? "dark" : "light"
+      );
     });
 
-    /**
-     * Simulation of streaming text
-     * @param {string} text - The full response from API
-     */
     function typeWriter(text) {
       answerBox.textContent = "";
       answerBox.classList.add("typing");
       let i = 0;
-      const speed = 20; // Speed in milliseconds (lower is faster)
+      const speed = 20;
 
       function type() {
         if (i < text.length) {
@@ -237,9 +258,9 @@
       type();
     }
 
-    // API Call Logic
     askBtn.addEventListener("click", async () => {
       const question = questionBox.value.trim();
+
       if (!question) {
         alert("Please type a question.");
         return;
@@ -249,18 +270,22 @@
       answerBox.style.opacity = "0.6";
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/ask", {
+        const response = await fetch("https://v-bot-78rn.onrender.com/ask", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ question })
         });
 
         const data = await response.json();
-        const fullAnswer = data.answer || "No answer received.";
-        
+
+        if (response.status !== 200) {
+          throw new Error(data.detail || "Server Error");
+        }
+
         answerBox.style.opacity = "1";
-        // Call the typewriter effect instead of just setting textContent
-        typeWriter(fullAnswer);
+        typeWriter(data.answer || "No answer received.");
 
       } catch (err) {
         answerBox.style.opacity = "1";
@@ -268,5 +293,6 @@
       }
     });
   </script>
+
 </body>
 </html>
