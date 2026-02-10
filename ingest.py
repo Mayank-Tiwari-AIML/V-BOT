@@ -42,7 +42,7 @@ def create_db():
     # Note: Use your OpenRouter key here just for the setup phase
     embeddings = OpenAIEmbeddings(
         model="text-embedding-3-small",
-        openai_api_key="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",
+        openai_api_key=,
         base_url="https://openrouter.ai/api/v1"
     )
 
